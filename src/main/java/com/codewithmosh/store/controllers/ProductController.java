@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.service.annotation.PutExchange;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -60,6 +61,28 @@ public class ProductController {
         var productDto = productMapper.toDto(product);
         var uri = uriBuilder.path("/products/{id}").buildAndExpand(productDto.getId()).toUri();
         return ResponseEntity.created(uri).body(productDto); //code: 201 created
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDto> updateProduct(
+            @PathVariable(name="id") Long id,
+            @RequestBody ProductDto request){
+        var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(null);
+        if(category==null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        var product = productRepository.findById(id).orElse(null);
+        if(product==null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        productMapper.update(request,product);
+        product.setCategory(category);
+        productRepository.save(product);
+        request.setId(product.getId());
+        return ResponseEntity.ok(request);
 
     }
 }
