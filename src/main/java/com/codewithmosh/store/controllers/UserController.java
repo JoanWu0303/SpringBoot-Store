@@ -49,9 +49,16 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(
+    public ResponseEntity<?> registerUser(
             @Valid  @RequestBody RegisterUserRequest request,
             UriComponentsBuilder uriBuilder) {
+        //business logic to check if the email already be register
+        if(userRepository.existsByEmail(request.getEmail())){
+            return ResponseEntity.badRequest().body(
+                    Map.of("email", "Email is already registered.")
+            );
+        }
+
         var user = userMapper.toEntity(request);
         userRepository.save(user);
 
@@ -93,7 +100,6 @@ public class UserController {
     public ResponseEntity<Void> changePassword(
             @RequestBody ChangePasswordRequest request,
             @PathVariable Long id) {
-
         var user = userRepository.findById(id).orElse(null);
         if (user == null) {
             return ResponseEntity.notFound().build();
