@@ -107,15 +107,4 @@ public class UserController {
         userRepository.save(user);
         return ResponseEntity.noContent().build(); //code: 204 No Content
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    //return format -> "name": "Name is required"
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex){
-        var errors = new HashMap<String, String>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-
-       return ResponseEntity.badRequest().body(errors);
-    }
 }
