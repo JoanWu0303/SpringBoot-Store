@@ -1,5 +1,6 @@
 package com.codewithmosh.store.controllers;
 
+import com.codewithmosh.store.dtos.ChangePasswordRequest;
 import com.codewithmosh.store.dtos.RegisterUserRequest;
 import com.codewithmosh.store.dtos.UpdateUserRequest;
 import com.codewithmosh.store.dtos.UserDto;
@@ -7,6 +8,7 @@ import com.codewithmosh.store.mappers.UserMapper;
 import com.codewithmosh.store.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -21,9 +23,9 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping
-    public Iterable<UserDto> getAllUsers(@RequestParam(required = false, defaultValue = "", name = "sort") String sortBy){
+    public Iterable<UserDto> getAllUsers(@RequestParam(required = false, defaultValue = "", name = "sort") String sortBy) {
 
-        if(!Set.of("name", "email").contains(sortBy)){ //valid sort name
+        if (!Set.of("name", "email").contains(sortBy)) { //valid sort name
             sortBy = "name";
         }
 
@@ -34,9 +36,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id){
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
         var user = userRepository.findById(id).orElse(null);
-        if(user == null){
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userMapper.toDto(user));
@@ -56,11 +58,11 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(
-            @PathVariable(name="id") Long id,
-            @RequestBody UpdateUserRequest request){
+            @PathVariable(name = "id") Long id,
+            @RequestBody UpdateUserRequest request) {
 
         var user = userRepository.findById(id).orElse(null);
-        if(user == null){
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
 
@@ -70,17 +72,35 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDto(user));
 
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable(name ="id") Long id){
+    public ResponseEntity<Void> deleteUser(@PathVariable(name = "id") Long id) {
 
         var user = userRepository.findById(id).orElse(null);
-        if(user == null){
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
         userRepository.delete(user);
 
         return ResponseEntity.noContent().build(); //code:204 No Content
+    }
 
+    @PostMapping("/{id}/change-password")
+    public ResponseEntity<Void> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            @PathVariable Long id) {
 
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!user.getPassword().equals(request.getOldPassword())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); //code: 401 Unauthorized
+        }
+
+        user.setPassword(request.getNewPassword());
+        userRepository.save(user);
+        return ResponseEntity.noContent().build(); //code: 204 No Content
     }
 }
