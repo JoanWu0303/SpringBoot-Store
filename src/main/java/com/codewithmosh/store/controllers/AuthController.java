@@ -42,8 +42,8 @@ public class AuthController {
 
         var cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setPath("/auth");
-        cookie.setMaxAge(jwtConfig.getRefreshTokenValidation()); //7days
+        cookie.setPath("/auth/refresh");
+        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration()); //7days
         cookie.setSecure(true);
         response.addCookie(cookie);
 
@@ -67,12 +67,20 @@ public class AuthController {
         return ResponseEntity.ok(userDto);
     }
 
-    @PostMapping("/validate")
-    public boolean validate(@RequestHeader("Authorization") String authHeader) {
-        System.out.println("Validate called");
-        authHeader = authHeader.replace("Bearer ", ""); //JSON format prefix Bearer_
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtResponse> refresh(
+            @CookieValue(value ="refreshToken")String refreshToken){
 
-        return jwtService.validateToken(authHeader);
+        //validate the token
+        if(!jwtService.validateToken(refreshToken)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        var userId = jwtService.getUserIdFromToken(refreshToken);
+        var user = userRepository.findById(userId).orElseThrow();
+        var accessToken = jwtService.generateAccessToken(user);
+
+        return ResponseEntity.ok(new JwtResponse(accessToken));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
