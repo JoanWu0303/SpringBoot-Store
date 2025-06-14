@@ -7,13 +7,13 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.SecretKey;
 
+@Data
 @Configuration
 @ConfigurationProperties(prefix = "spring.jwt")
-@Data
 public class JwtConfig {
     private String secret;
-    private int accessTokenValidation;
-    private int refreshTokenValidation;
+    private int accessTokenExpiration;
+    private int refreshTokenExpiration;
 
     public SecretKey getSecretKey() {
        return Keys.hmacShaKeyFor(secret.getBytes());

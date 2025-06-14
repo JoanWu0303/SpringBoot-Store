@@ -13,17 +13,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-@Service
 @AllArgsConstructor
+@Service
 public class JwtService {
     private final JwtConfig jwtConfig;
 
     public String generateAccessToken(User user) {
-        return generateToken(user, jwtConfig.getAccessTokenValidation());
+        System.out.println(jwtConfig.getAccessTokenExpiration());
+        return generateToken(user, jwtConfig.getAccessTokenExpiration());
     }
 
     public String generateRefreshToken(User user) {
-        return generateToken(user, jwtConfig.getRefreshTokenValidation());
+        System.out.println(jwtConfig.getRefreshTokenExpiration());
+        return generateToken(user, jwtConfig.getRefreshTokenExpiration());
     }
 
     private String generateToken(User user, long tokenExpiration) {
