@@ -11,3 +11,6 @@ spring:
     secret: ${JWT_SECRET}
     accessTokenExpiration: 300 #5mins
     refreshTokenExpiration: 604800 #7days
+
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY}
