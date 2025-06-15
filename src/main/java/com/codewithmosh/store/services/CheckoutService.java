@@ -1,0 +1,45 @@
+package com.codewithmosh.store.services;
+
+import com.codewithmosh.store.dtos.CheckoutRequest;
+import com.codewithmosh.store.dtos.CheckoutResponse;
+import com.codewithmosh.store.dtos.ErrorDto;
+import com.codewithmosh.store.entities.Order;
+import com.codewithmosh.store.exceptions.CartEmptyException;
+import com.codewithmosh.store.exceptions.CartNotFoundException;
+import com.codewithmosh.store.repositories.CartRepository;
+import com.codewithmosh.store.repositories.OrderRepository;
+import lombok.AllArgsConstructor;
+import org.antlr.v4.runtime.misc.LogManager;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+@AllArgsConstructor
+@Service
+public class CheckoutService {
+
+    private final CartRepository cartRepository;
+    private final AuthService authService;
+    private final OrderRepository orderRepository;
+    private final CartService cartService;
+
+    public CheckoutResponse checkout(CheckoutRequest checkoutRequest) {
+        //check if the cart exist
+        var cart = cartRepository.getCartWithItems(checkoutRequest.getCartId()).orElse(null);
+        if(cart == null) {
+            throw new CartNotFoundException();
+        }
+
+        //check if the cart is empty with no items
+        if(cart.isEmpty()) {
+           throw new CartEmptyException();
+        }
+
+        //create order and orderItem object inside the Order class
+        var order = Order.fromCart(cart, authService.getCurrentUser());
+        orderRepository.save(order);
+
+        cartService.clearCart(cart.getId());
+
+        return new CheckoutResponse(order.getId()) ;
+    }
+}
