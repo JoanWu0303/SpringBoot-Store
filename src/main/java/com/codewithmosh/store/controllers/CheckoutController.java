@@ -39,6 +39,7 @@ public class CheckoutController {
                    new ErrorDto("Cart not found")
             );
         }
+
         //check if the cart is empty with no items
         if(cart.getItems().isEmpty()) {
             return ResponseEntity.badRequest().body(
@@ -46,24 +47,10 @@ public class CheckoutController {
             );
         }
 
-        //save the order
-        Order order = new Order();
-        order.setTotalPrice(cart.getTotalPrice());
-        order.setStatus(OrderStatus.PENDING);
-        order.setCustomer(authService.getCurrentUser());
-
-        //iterate the cartItem to orderItem
-        cart.getItems().forEach(item -> {
-            var orderItem = new OrderItem();
-            orderItem.setQuantity(item.getQuantity());
-            orderItem.setOrder(order);
-            orderItem.setUnitPrice(item.getProduct().getPrice());
-            orderItem.setProduct(item.getProduct());
-            orderItem.setTotalPrice(item.getTotalPrice());
-            order.getItems().add(orderItem);
-        });
-
+        //create order and orderItem object inside the Order class
+        var order = Order.fromCart(cart, authService.getCurrentUser());
         orderRepository.save(order);
+
         cartService.clearCart(cart.getId());
 
         return ResponseEntity.ok(new CheckoutResponse(order.getId())) ;
