@@ -1,11 +1,8 @@
 package com.codewithmosh.store.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,7 +25,7 @@ public class Order {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private PaymentStatus status;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -43,7 +40,7 @@ public class Order {
         //save the order
         Order order = new Order();
         order.setCustomer(customer);
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(PaymentStatus.PENDING);
         order.setTotalPrice(cart.getTotalPrice());
 
         //iterate the cartItem to orderItem
