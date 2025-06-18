@@ -1,9 +1,7 @@
-package com.codewithmosh.store.controllers;
+package com.codewithmosh.store.carts;
 
 import com.codewithmosh.store.dtos.*;
-import com.codewithmosh.store.exceptions.CartNotFoundException;
 import com.codewithmosh.store.products.ProductNotFoundException;
-import com.codewithmosh.store.services.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
