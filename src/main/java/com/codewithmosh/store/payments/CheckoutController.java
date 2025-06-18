@@ -1,6 +1,6 @@
 package com.codewithmosh.store.payments;
 
-import com.codewithmosh.store.dtos.ErrorDto;
+import com.codewithmosh.store.common.ErrorDto;
 import com.codewithmosh.store.orders.Order;
 import com.codewithmosh.store.orders.OrderItem;
 import com.codewithmosh.store.orders.PaymentStatus;

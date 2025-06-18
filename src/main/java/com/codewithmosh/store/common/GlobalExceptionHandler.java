@@ -1,6 +1,5 @@
-package com.codewithmosh.store.controllers;
+package com.codewithmosh.store.common;
 
-import com.codewithmosh.store.dtos.ErrorDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
