@@ -1,4 +1,4 @@
-package com.codewithmosh.store.services;
+package com.codewithmosh.store.payments;
 
 import com.codewithmosh.store.dtos.PaymentResult;
 import com.codewithmosh.store.dtos.WebhookRequest;
@@ -13,9 +13,7 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

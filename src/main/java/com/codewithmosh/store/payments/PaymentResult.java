@@ -1,4 +1,4 @@
-package com.codewithmosh.store.dtos;
+package com.codewithmosh.store.payments;
 
 import com.codewithmosh.store.entities.PaymentStatus;
 import lombok.AllArgsConstructor;

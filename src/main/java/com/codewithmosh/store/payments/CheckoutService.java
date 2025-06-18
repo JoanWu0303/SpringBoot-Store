@@ -1,20 +1,13 @@
-package com.codewithmosh.store.services;
+package com.codewithmosh.store.payments;
 
-import com.codewithmosh.store.dtos.CheckoutRequest;
-import com.codewithmosh.store.dtos.CheckoutResponse;
-import com.codewithmosh.store.dtos.WebhookRequest;
 import com.codewithmosh.store.entities.Order;
-import com.codewithmosh.store.entities.PaymentStatus;
 import com.codewithmosh.store.exceptions.CartEmptyException;
 import com.codewithmosh.store.exceptions.CartNotFoundException;
-import com.codewithmosh.store.exceptions.PaymentException;
 import com.codewithmosh.store.repositories.CartRepository;
 import com.codewithmosh.store.repositories.OrderRepository;
-import com.stripe.exception.SignatureVerificationException;
-import com.stripe.model.PaymentIntent;
-import com.stripe.net.Webhook;
+import com.codewithmosh.store.services.AuthService;
+import com.codewithmosh.store.services.CartService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +19,7 @@ public class CheckoutService {
     private final AuthService authService;
     private final OrderRepository orderRepository;
     private final CartService cartService;
-    private final PaymentGateway paymentGateway;
+    private final CheckoutController.PaymentGateway paymentGateway;
 
     @Transactional
     public CheckoutResponse checkout(CheckoutRequest checkoutRequest){
