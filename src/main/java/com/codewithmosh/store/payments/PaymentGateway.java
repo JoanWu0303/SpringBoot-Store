@@ -1,7 +1,5 @@
 package com.codewithmosh.store.payments;
 
-import com.codewithmosh.store.dtos.PaymentResult;
-import com.codewithmosh.store.dtos.WebhookRequest;
 import com.codewithmosh.store.entities.Order;
 
 import java.util.Optional;
