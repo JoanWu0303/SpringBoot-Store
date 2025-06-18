@@ -1,6 +1,6 @@
 package com.codewithmosh.store.auth;
 
-import com.codewithmosh.store.config.JwtConfig;
+
 import com.codewithmosh.store.users.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

@@ -1,5 +1,6 @@
 package com.codewithmosh.store.payments;
 
+import com.codewithmosh.store.auth.AuthService;
 import com.codewithmosh.store.filters.LoggingFilter;
 import com.codewithmosh.store.entities.Order;
 import com.codewithmosh.store.exceptions.CartEmptyException;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CheckoutService {
 
     private final CartRepository cartRepository;
-    private final LoggingFilter.AuthService authService;
+    private final AuthService authService;
     private final OrderRepository orderRepository;
     private final CartService cartService;
     private final CheckoutController.PaymentGateway paymentGateway;
