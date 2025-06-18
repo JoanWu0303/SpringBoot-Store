@@ -1,12 +1,8 @@
-package com.codewithmosh.store.controllers;
+package com.codewithmosh.store.auth;
 
-import com.codewithmosh.store.config.JwtConfig;
-import com.codewithmosh.store.dtos.JwtResponse;
 import com.codewithmosh.store.users.UserDto;
-import com.codewithmosh.store.dtos.LoginRequest;
 import com.codewithmosh.store.users.UserMapper;
 import com.codewithmosh.store.users.UserRepository;
-import com.codewithmosh.store.services.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -25,13 +21,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final SecurityConfig.JwtService jwtService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final JwtConfig jwtConfig;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody SecurityConfig.LoginRequest request, HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );

@@ -1,5 +1,6 @@
 package com.codewithmosh.store.services;
 
+import com.codewithmosh.store.filters.LoggingFilter;
 import com.codewithmosh.store.dtos.OrderDto;
 import com.codewithmosh.store.exceptions.OrderNotFoundException;
 import com.codewithmosh.store.mappers.OrderMapper;
@@ -14,7 +15,7 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private final AuthService authService;
+    private final LoggingFilter.AuthService authService;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
