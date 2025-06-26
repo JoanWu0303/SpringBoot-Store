@@ -1,5 +1,6 @@
 package com.codewithmosh.store.auth;
 
+import com.codewithmosh.store.common.SecurityRules;
 import com.codewithmosh.store.users.Role;
 import com.codewithmosh.store.users.User;
 import io.jsonwebtoken.Claims;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @Configuration
@@ -38,6 +40,7 @@ import java.util.Date;
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final List<SecurityRules> featureSecurityRules;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,21 +51,11 @@ public class SecurityConfig {
         http
                 .sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(c->c
-                        .requestMatchers("/carts/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/swagger-ui.html").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST,"/users").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/products/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/products/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT,"/products/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/products/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,"/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/checkout/webhook").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(c->{
+                    featureSecurityRules.forEach(r->r.configure(c));
+                    c.anyRequest().authenticated();
+                        }
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(c -> {
                     c.authenticationEntryPoint(
